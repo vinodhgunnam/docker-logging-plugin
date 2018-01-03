@@ -1,13 +1,26 @@
 PLUGIN_NAME=splunknova/docker-logging-plugin
-PLUGIN_TAG=v1
+
+
+PLUGIN_TAGS := $(shell git tag)
+ifeq ($(TRAVIS_BRANCH), master)
+    PLUGIN_TAGS += latest
+endif
+
+ifdef TRAVIS_BRANCH
+	PLUGIN_TAGS += $(TRAVIS_BRANCH)_latest
+endif
+
+SHELL := /bin/bash
 
 all: clean docker rootfs create
 
 clean:
-	@echo "### rm ./plugin"
+	@echo "### rm -rf ./plugin"
 	rm -rf ./plugin
-	@echo "### remove existing plugin ${PLUGIN_NAME}:${PLUGIN_TAG} if exists"
-	docker plugin rm -f ${PLUGIN_NAME}:${PLUGIN_TAG} || true
+	@for tag in ${PLUGIN_TAGS} ; do \
+		echo "### remove existing plugin ${PLUGIN_NAME}:$$tag if exists" ;\
+		docker plugin rm -f ${PLUGIN_NAME}:$$tag 2> /dev/null || true ;\
+	done
 
 docker:
 	@echo "### docker build: rootfs image with splunk-log-plugin"
@@ -16,21 +29,30 @@ docker:
 rootfs:
 	@echo "### create rootfs directory in ./plugin/rootfs"
 	mkdir -p ./plugin/rootfs
-	docker create --name tmprootfs ${PLUGIN_NAME}:rootfs
+	docker create --name tmprootfs ${PLUGIN_NAME}:rootfs > /dev/null
 	docker export tmprootfs | tar -x -C ./plugin/rootfs
 	@echo "### copy config.json to ./plugin/"
 	cp config.json ./plugin/
-	docker rm -vf tmprootfs
+	docker rm -vf tmprootfs > /dev/null
 
 create:
-	@echo "### create new plugin ${PLUGIN_NAME}:${PLUGIN_TAG} from ./plugin"
-	docker plugin create ${PLUGIN_NAME}:${PLUGIN_TAG} ./plugin
+	@for tag in ${PLUGIN_TAGS} ; do \
+		echo "### create new plugin ${PLUGIN_NAME}:$$tag from ./plugin" ;\
+		docker plugin create ${PLUGIN_NAME}:$$tag ./plugin ;\
+		rc=$$?; if [[ $$rc != 0 ]]; then exit $$rc; fi ; \
+	done
 
 enable:
-	@echo "### enable plugin ${PLUGIN_NAME}:${PLUGIN_TAG}"
-	docker plugin enable ${PLUGIN_NAME}:${PLUGIN_TAG}
+	@for tag in ${PLUGIN_TAGS} ; do \
+		echo "### enable plugin ${PLUGIN_NAME}:$$tag" ;\
+		docker plugin enable ${PLUGIN_NAME}:$$tag ;\
+		rc=$$?; if [[ $$rc != 0 ]]; then exit $$rc; fi ; \
+	done
 
-push: clean docker rootfs create enable
-	@echo "### push plugin ${PLUGIN_NAME}:${PLUGIN_TAG}"
-	docker plugin push ${PLUGIN_NAME}:${PLUGIN_TAG}
 
+push: all
+	@for tag in ${PLUGIN_TAGS} ; do \
+		echo "### push plugin ${PLUGIN_NAME}:$$tag" ;\
+		docker plugin push ${PLUGIN_NAME}:$$tag ;\
+		rc=$$?; if [[ $$rc != 0 ]]; then exit $$rc; fi ; \
+	done

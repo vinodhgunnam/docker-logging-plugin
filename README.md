@@ -1,3 +1,7 @@
+# Status
+
+[ ![Travis Status for SplunkNova docker plugin](https://travis-ci.org/splunknova/docker-logging-plugin.svg?branch=master)]
+
 # Splunk Log-driver plugin for Docker
 
 Splunk logging plugin allows docker containers to send their logs directly to a Splunk Enterprise service, a Splunk
@@ -15,7 +19,7 @@ Additional information about Docker plugins [can be found here.](https://docs.do
 For development, you can clone and run make
 
 ```
-git clone git@github.com:splunk/docker-logging-plugin.git
+git clone git@github.com:splunknova/docker-logging-plugin.git
 cd docker-logging-plugin
 make
 ```
@@ -25,7 +29,7 @@ make
 To install the plugin, you can run
 
 ```
-docker plugin install splunk/docker-logging-driver:latest --alias splunk
+docker plugin install splunknova/docker-logging-plugin --alias splunk
 docker plugin ls
 ```
 
