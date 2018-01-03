@@ -1,11 +1,13 @@
-PLUGIN_NAME=splunk-log-plugin
-PLUGIN_TAG=latest
+PLUGIN_NAME=splunknova/docker-logging-plugin
+PLUGIN_TAG=v1
 
 all: clean docker rootfs create
 
 clean:
 	@echo "### rm ./plugin"
 	rm -rf ./plugin
+	@echo "### remove existing plugin ${PLUGIN_NAME}:${PLUGIN_TAG} if exists"
+	docker plugin rm -f ${PLUGIN_NAME}:${PLUGIN_TAG} || true
 
 docker:
 	@echo "### docker build: rootfs image with splunk-log-plugin"
@@ -21,8 +23,6 @@ rootfs:
 	docker rm -vf tmprootfs
 
 create:
-	@echo "### remove existing plugin ${PLUGIN_NAME}:${PLUGIN_TAG} if exists"
-	docker plugin rm -f ${PLUGIN_NAME}:${PLUGIN_TAG} || true
 	@echo "### create new plugin ${PLUGIN_NAME}:${PLUGIN_TAG} from ./plugin"
 	docker plugin create ${PLUGIN_NAME}:${PLUGIN_TAG} ./plugin
 
