@@ -6,7 +6,7 @@ COPY . /go/src/github.com/splunk/splunk-log-plugin/
 
 
 RUN cd /go/src/github.com/splunk/splunk-log-plugin && go get
-
+RUN go test .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /bin/splunk-log-plugin .
 
 FROM alpine:3.7
