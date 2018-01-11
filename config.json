@@ -1,13 +1,13 @@
 {
-	"description": "splunk logging plugin",
+	"description": "Nova logging plugin",
 	"documentation": "https://github.com/splunknova/docker-logging-plugin",
-	"entrypoint": ["/bin/splunk-log-plugin"],
+	"entrypoint": ["/bin/nova-log-plugin"],
     "network": {
         "type": "host"
     },
 	"interface": {
 		"types": ["docker.logdriver/1.0"],
-		"socket": "splunklog.sock"
+		"socket": "novalog.sock"
 	},
 	"env": [
 		{

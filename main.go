@@ -8,7 +8,7 @@ import (
 	"github.com/docker/go-plugins-helpers/sdk"
 )
 
-const socketAddress = "/run/docker/plugins/splunklog.sock"
+const socketAddress = "/run/docker/plugins/novalog.sock"
 
 var logLevels = map[string]logrus.Level{
 	"debug": logrus.DebugLevel,
