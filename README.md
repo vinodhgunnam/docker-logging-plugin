@@ -1,11 +1,10 @@
-# Status
+# Nova Log-driver plugin for Docker
 
-[ ![Travis Status for SplunkNova docker plugin](https://travis-ci.org/splunknova/docker-logging-plugin.svg?branch=master)]
+[![Travis Status for Nova docker plugin](https://travis-ci.org/splunknova/docker-logging-plugin.svg?branch=master)](https://travis-ci.org/splunknova/docker-logging-plugin)
 
-# Splunk Log-driver plugin for Docker
-
-Splunk logging plugin allows docker containers to send their logs directly to a Splunk Enterprise service, a Splunk
-Cloud deployment, or to a SplunkNova account.
+Nova logging plugin allows docker
+containers to send their logs directly to a Splunk Enterprise service,
+a Splunk Cloud deployment, or to a Splunk Nova account.
 
 ## Getting Started
 
@@ -13,12 +12,11 @@ You need to install Docker Engine >= 1.12.
 
 Additional information about Docker plugins [can be found here.](https://docs.docker.com/engine/extend/plugins_logging/)
 
-
 ### Developing
 
 For development, you can clone and run make
 
-```
+```bash
 git clone git@github.com:splunknova/docker-logging-plugin.git
 cd docker-logging-plugin
 make
@@ -28,9 +26,8 @@ make
 
 To install the plugin, you can run
 
-```
-docker plugin install splunknova/docker-logging-plugin --alias splunk
-docker plugin ls
+```bash
+docker plugin install splunknova/docker-logging-plugin
 ```
 
 This command will pull and enable the plugin
@@ -39,11 +36,10 @@ This command will pull and enable the plugin
 
 The plugin uses the same parameters as the [splunk logging driver](https://docs.docker.com/engine/admin/logging/splunk/).
 
-
 #### Splunk Enterprise Example
 
-```
-$ docker run --log-driver=splunk \
+```bash
+$ docker run --log-driver=splunknova/docker-logging-plugin \
              --log-opt splunk-url=https://your-splunkhost:8088 \
              --log-opt splunk-token=176FCEBF-4CF5-4EDF-91BC-703796522D20 \
              --log-opt splunk-capath=/path/to/cert/cacert.pem \
@@ -57,12 +53,13 @@ $ docker run --log-driver=splunk \
 
 ```
 
-#### SplunkNova Example
+#### Nova Example
 
-Once you make an account on www.splunknova.com, you can grab your API credentials and use them here.
+Once you make an account on www.splunknova.com,
+you can grab your API credentials and use them here.
 
-```
-$ docker run --log-driver=splunk \
+```bash
+$ docker run --log-driver=splunknova/docker-logging-plugin \
              --log-opt splunk-url=https://api.splunknova.com:443 \
              --log-opt splunk-token=<YOUR BASE64 ENCODED API KEYS> \
              --log-opt splunk-url-path='/v1/events' \
@@ -72,4 +69,3 @@ $ docker run --log-driver=splunk \
              --log-opt splunk-source='docker-logging' \
              -it ubuntu bash
 ```
-
